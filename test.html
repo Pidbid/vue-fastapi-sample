@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+    <div id="app">
+        <el-button @click="addFile">addFile</el-button>
+        <el-button @click="uploadFile">uploadFile</el-button>
+        <input type="file" ref="upload_input" style="display: none;" @change="select_file">
+    </div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                select_file_data: '',
+                target_url: 'http://127.0.0.1:8000/upload'
+            }
+        },
+        methods: {
+            addFile: function () {
+                this.$refs.upload_input.click()
+            },
+            uploadFile: function () {
+                let uploads = new FormData()
+                let config = { headers: { "Content-Type": "multipart/form-data" } }
+                if (this.select_file_data != "") {
+                    uploads.append("file",this.select_file_data[0])
+                    axios.post(this.target_url, uploads, config).then(function (res) {
+                        console.log(res.data)
+                    })
+                }
+            },
+            select_file: function (file) {
+                this.select_file_data = file.target.files
+                console.log(this.select_file_data)
+            }
+        }
+    })
+</script>
+
+</html>
